@@ -16,13 +16,13 @@ public class ParamsService {
     }
 
     @Transactional
-    public Long create(ServiceParamsDTO serviceParamsDTO) {
+    public String create(ServiceParamsDTO serviceParamsDTO) {
         var optionalServiceParams = serviceParamsRepository.findByAuthUrl(serviceParamsDTO.getAuthUrl());
         var serviceParams = optionalServiceParams.orElseGet(() -> new ServiceParams(serviceParamsDTO));
-        return serviceParamsRepository.save(serviceParams).getId();
+        return serviceParamsRepository.save(serviceParams).getUuid();
     }
 
-    public ServiceParams get(Long id) {
-        return serviceParamsRepository.findById(id).get();
+    public ServiceParams get(String uuid) {
+        return serviceParamsRepository.findById(uuid).get();
     }
 }

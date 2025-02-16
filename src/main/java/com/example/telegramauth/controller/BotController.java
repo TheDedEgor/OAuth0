@@ -31,7 +31,7 @@ public class BotController {
     }
 
     @PostMapping("/addInfo")
-    public Long addInfo(@Valid @RequestBody ServiceParamsDTO params) {
+    public String addInfo(@Valid @RequestBody ServiceParamsDTO params) {
         return paramsService.create(params);
     }
 

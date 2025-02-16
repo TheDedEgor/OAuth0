@@ -61,15 +61,15 @@ public class BotUpdateListener implements UpdatesListener {
     private void defaultHandler(long chatId, String text) {
         if (text.startsWith("/start")) {
             try {
-                var optionalParamsId = getParamsId(text);
-                if (optionalParamsId.isEmpty()) {
-                    log.error("ID не был передан боту");
+                var optionalUuid  = getUuid(text);
+                if (optionalUuid .isEmpty()) {
+                    log.error("UUID не был передан боту");
                     bot.execute(new SendMessage(chatId, BOT_ERROR_MESSAGE));
                     return;
                 }
-                var id = optionalParamsId.get();
-                userStateManager.setParamsId(chatId, id);
-                var params = paramsService.get(id);
+                var uuid = optionalUuid.get();
+                userStateManager.setUserUuid(chatId, uuid);
+                var params = paramsService.get(uuid);
 
                 if (enableConfirm) {
                     var keyboard = new ReplyKeyboardMarkup(
@@ -83,7 +83,7 @@ public class BotUpdateListener implements UpdatesListener {
                     userStateManager.setUserState(chatId, UserStateManager.UserState.SERVICE_AUTH);
                 } else {
                     auth(chatId);
-                    userStateManager.clearParamsId(chatId);
+                    userStateManager.clearUserUuid(chatId);
                 }
             }
             catch (Exception ex) {
@@ -100,31 +100,31 @@ public class BotUpdateListener implements UpdatesListener {
         if (text.equals("да")) {
             auth(chatId);
             userStateManager.setUserState(chatId, UserStateManager.UserState.DEFAULT);
-            userStateManager.clearParamsId(chatId);
+            userStateManager.clearUserUuid(chatId);
         } else if (text.equals("нет")) {
             var message = new SendMessage(chatId, "Вход отменен")
                     .replyMarkup(new ReplyKeyboardRemove(true));
             bot.execute(message);
             userStateManager.setUserState(chatId, UserStateManager.UserState.DEFAULT);
-            userStateManager.clearParamsId(chatId);
+            userStateManager.clearUserUuid(chatId);
         } else {
             var message = new SendMessage(chatId, "Подтвердите вход в сервис!");
             bot.execute(message);
         }
     }
 
-    private Optional<Long> getParamsId(String text) {
+    private Optional<String> getUuid(String text) {
         var parts = text.split("\\s+", 2);
         if (parts.length > 1) {
-            return Optional.of(Long.parseLong(parts[1]));
+            return Optional.of(parts[1]);
         }
         return Optional.empty();
     }
 
     private void auth(long chatId) {
         try {
-            var id = userStateManager.getParamsIds(chatId);
-            var params = paramsService.get(id);
+            var uuid = userStateManager.getUserUuid(chatId);
+            var params = paramsService.get(uuid);
 
             bot.execute(new SendMessage(chatId, "Авторизуемся..."));
 
