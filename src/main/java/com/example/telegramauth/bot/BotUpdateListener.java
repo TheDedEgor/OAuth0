@@ -2,7 +2,7 @@ package com.example.telegramauth.bot;
 
 import com.example.telegramauth.api.ApiService;
 import com.example.telegramauth.model.dto.UserDTO;
-import com.example.telegramauth.service.DataService;
+import com.example.telegramauth.service.ParamsService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
@@ -30,15 +30,15 @@ public class BotUpdateListener implements UpdatesListener {
 
     private final ApiService apiService;
 
-    private final DataService dataService;
+    private final ParamsService paramsService;
 
     private static final String BOT_ERROR_MESSAGE = "Во время авторизации произошла ошибка! Обратитесь к администратору!";
 
-    public BotUpdateListener(TelegramBot bot, UserStateManager userStateManager, ApiService apiService, DataService dataService) {
+    public BotUpdateListener(TelegramBot bot, UserStateManager userStateManager, ApiService apiService, ParamsService paramsService) {
         this.bot = bot;
         this.apiService = apiService;
         this.userStateManager = userStateManager;
-        this.dataService = dataService;
+        this.paramsService = paramsService;
     }
 
     @Override
@@ -61,15 +61,15 @@ public class BotUpdateListener implements UpdatesListener {
     private void defaultHandler(long chatId, String text) {
         if (text.startsWith("/start")) {
             try {
-                var optionalUuid = getUuid(text);
-                if (optionalUuid.isEmpty()) {
-                    log.error("UUID не был передан боту");
+                var optionalParamsId = getParamsId(text);
+                if (optionalParamsId.isEmpty()) {
+                    log.error("ID не был передан боту");
                     bot.execute(new SendMessage(chatId, BOT_ERROR_MESSAGE));
                     return;
                 }
-                var uuid = optionalUuid.get();
-                userStateManager.setUserUuid(chatId, uuid);
-                var params = dataService.get(uuid);
+                var id = optionalParamsId.get();
+                userStateManager.setParamsId(chatId, id);
+                var params = paramsService.get(id);
 
                 if (enableConfirm) {
                     var keyboard = new ReplyKeyboardMarkup(
@@ -83,7 +83,7 @@ public class BotUpdateListener implements UpdatesListener {
                     userStateManager.setUserState(chatId, UserStateManager.UserState.SERVICE_AUTH);
                 } else {
                     auth(chatId);
-                    clearUuidData(chatId);
+                    userStateManager.clearParamsId(chatId);
                 }
             }
             catch (Exception ex) {
@@ -100,33 +100,34 @@ public class BotUpdateListener implements UpdatesListener {
         if (text.equals("да")) {
             auth(chatId);
             userStateManager.setUserState(chatId, UserStateManager.UserState.DEFAULT);
-            clearUuidData(chatId);
+            userStateManager.clearParamsId(chatId);
         } else if (text.equals("нет")) {
             var message = new SendMessage(chatId, "Вход отменен")
                     .replyMarkup(new ReplyKeyboardRemove(true));
             bot.execute(message);
             userStateManager.setUserState(chatId, UserStateManager.UserState.DEFAULT);
-            clearUuidData(chatId);;
+            userStateManager.clearParamsId(chatId);
         } else {
             var message = new SendMessage(chatId, "Подтвердите вход в сервис!");
             bot.execute(message);
         }
     }
 
-    private Optional<String> getUuid(String text) {
+    private Optional<Long> getParamsId(String text) {
         var parts = text.split("\\s+", 2);
         if (parts.length > 1) {
-            return Optional.of(parts[1]);
+            return Optional.of(Long.parseLong(parts[1]));
         }
         return Optional.empty();
     }
 
     private void auth(long chatId) {
-        var uuid = userStateManager.getUserUuid(chatId);
-        var params = dataService.get(uuid);
-
-        bot.execute(new SendMessage(chatId, "Авторизуемся..."));
         try {
+            var id = userStateManager.getParamsIds(chatId);
+            var params = paramsService.get(id);
+
+            bot.execute(new SendMessage(chatId, "Авторизуемся..."));
+
             var response = apiService.auth(params.getAuthUrl(), new UserDTO(chatId));
             if (response.getStatusCode().is2xxSuccessful()) {
                 var message = new SendMessage(chatId, "Авторизация прошла успешно!")
@@ -151,11 +152,5 @@ public class BotUpdateListener implements UpdatesListener {
             return "Вы подтверждаете вход?";
         }
         return "Вы подтверждаете вход в сервис: " + serviceName + "?";
-    }
-
-    private void clearUuidData(long chatId) {
-        var uuid = userStateManager.getUserUuid(chatId);
-        dataService.remove(uuid);
-        userStateManager.clearUserUuid(chatId);
     }
 }

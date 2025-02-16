@@ -8,7 +8,7 @@ import java.util.Map;
 @Component
 public class UserStateManager {
     private final Map<Long, UserState> userStates = new HashMap<>();
-    private final Map<Long, String> userUuids = new HashMap<>();
+    private final Map<Long, Long> userParamIds = new HashMap<>();
 
     public void setUserState(long chatId, UserState state) {
         userStates.put(chatId, state);
@@ -18,20 +18,16 @@ public class UserStateManager {
         return userStates.getOrDefault(chatId, UserState.DEFAULT);
     }
 
-    public void clearUserState(long chatId) {
-        userStates.remove(chatId);
+    public void setParamsId(long chatId, long id) {
+        userParamIds.put(chatId, id);
     }
 
-    public void setUserUuid(long chatId, String uuid) {
-        userUuids.put(chatId, uuid);
+    public Long getParamsIds(long chatId) {
+        return userParamIds.get(chatId);
     }
 
-    public String getUserUuid(long chatId) {
-        return userUuids.get(chatId);
-    }
-
-    public void clearUserUuid(long chatId) {
-        userUuids.remove(chatId);
+    public void clearParamsId(long chatId) {
+        userParamIds.remove(chatId);
     }
 
     public enum UserState {

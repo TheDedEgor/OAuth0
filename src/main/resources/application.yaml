@@ -1,4 +1,14 @@
-spring.application.name: TelegramAuth
+spring:
+    application.name: TelegramAuth
+    datasource:
+        url: jdbc:h2:file:./db/data;AUTO_SERVER=TRUE
+        driverClassName: org.h2.Driver
+        username: sa
+        password: password
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        generate-ddl: true
 bot:
     token: ${token}
+    url: ${bot-url:https://t.me/CentralizedAuthorizationBot}
     enableConfirm: ${enableConfirm:false}
