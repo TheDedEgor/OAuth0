@@ -10,5 +10,7 @@ spring:
         generate-ddl: true
 bot:
     token: ${token}
-    url: ${bot-url:https://t.me/CentralizedAuthorizationBot}
+    url: ${bot-url:https://t.me/oauth0_bot}
     enableConfirm: ${enableConfirm:false}
+
+server.port: ${app-port:8080}

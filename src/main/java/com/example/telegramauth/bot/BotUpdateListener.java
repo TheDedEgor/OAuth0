@@ -1,5 +1,11 @@
 package com.example.telegramauth.bot;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.example.telegramauth.api.ApiService;
 import com.example.telegramauth.model.dto.UserDTO;
 import com.example.telegramauth.service.ParamsService;
@@ -10,12 +16,8 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
@@ -47,7 +49,9 @@ public class BotUpdateListener implements UpdatesListener {
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
-    private void handleUpdate(Update update) {
+    private void handleUpdate(Update update) { 
+        // TODO: Пересмотреть поиск идентификатора пользователя на id из параметра "from"
+        // Там же можно достать firstname, lastname и username
         var chatId = update.message().chat().id();
         var messageText = update.message().text().trim();
         var state = userStateManager.getUserState(chatId);
@@ -121,14 +125,14 @@ public class BotUpdateListener implements UpdatesListener {
         return Optional.empty();
     }
 
-    private void auth(long chatId) {
+    private void auth(Long chatId) {
         try {
             var uuid = userStateManager.getUserUuid(chatId);
             var params = paramsService.get(uuid);
 
             bot.execute(new SendMessage(chatId, "Авторизуемся..."));
 
-            var response = apiService.auth(params.getAuthUrl(), new UserDTO(chatId));
+            var response = apiService.auth(params.getAuthUrl(), new UserDTO(chatId, uuid)); 
             if (response.getStatusCode().is2xxSuccessful()) {
                 var message = new SendMessage(chatId, "Авторизация прошла успешно!")
                         .replyMarkup(new ReplyKeyboardRemove(true));
