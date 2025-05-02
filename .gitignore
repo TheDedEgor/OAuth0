@@ -33,3 +33,5 @@ build/
 .vscode/
 .env
 db/*
+
+qrcode.png
