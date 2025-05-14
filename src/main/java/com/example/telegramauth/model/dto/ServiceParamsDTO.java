@@ -10,4 +10,5 @@ public class ServiceParamsDTO {
     @NotBlank(message = "URL для авторизации обязателен")
     private String authUrl;
     private String serviceName;
+    private Boolean enableCreationCheck = true;
 }
