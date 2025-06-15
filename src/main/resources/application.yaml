@@ -22,9 +22,9 @@ bucket4j:
     filter-config-caching-enabled: true
     filter-config-cache-name: filterConfigCache
     filters:
-        - id: bot-filter
+        - id: session-filter
           cache-name: buckets
-          url: /bot.*
+          url: /session.*
           rate-limits:
             - cache-key: getRemoteAddr()
               bandwidths:
@@ -35,6 +35,5 @@ bucket4j:
 bot:
     token: ${token}
     url: ${bot-url:https://t.me/oauth0_bot}
-    enableConfirm: ${enableConfirm:false}
 
 server.port: ${app-port:8080}

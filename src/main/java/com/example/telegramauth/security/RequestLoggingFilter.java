@@ -1,4 +1,4 @@
-package com.example.telegramauth.controller;
+package com.example.telegramauth.security;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

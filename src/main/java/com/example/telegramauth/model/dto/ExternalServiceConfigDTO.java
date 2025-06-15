@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
-public class ServiceParamsDTO {
+public class ExternalServiceConfigDTO {
     @NotBlank(message = "URL для авторизации обязателен")
     private String authUrl;
     private String serviceName;
