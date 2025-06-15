@@ -34,7 +34,7 @@ public class BotUpdateListener implements UpdatesListener {
 
     private void handleUpdate(Update update) {
         var chatId = update.message().chat().id();
-        var text = update.message().text().trim();
+        var text = update.message().text().trim().split(" ")[0];
 
         var command = commandMap.get(text);
 
