@@ -1,0 +1,287 @@
+/* --- ОБЩИЕ СТИЛИ --- */
+:root {
+    --error-color: #e74c3c;
+    --error-bg-color: #fdf2f2;
+    --background-color: #f0f2f5;
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --text-muted: #6c757d;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --border-radius: 16px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 420px;
+    display: none; /* По умолчанию все контейнеры скрыты */
+}
+
+.container.active {
+    display: flex; /* Показываем активный контейнер */
+}
+
+/* --- СТИЛИ КАРТОЧКИ ОШИБКИ --- */
+.card-error {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    text-align: center;
+    border: 1px solid #f5c6cb;
+    overflow: hidden;
+}
+
+.card-error-header {
+    background-color: var(--error-bg-color);
+    padding: 30px 40px;
+    border-bottom: 1px solid #f5c6cb;
+}
+
+.error-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--error-color);
+    margin: 0 auto;
+}
+
+.card-error-content {
+    padding: 30px 40px;
+}
+
+.error-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--error-color);
+}
+
+.error-message {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.close-button {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--error-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.close-button:hover {
+    background-color: #c0392b;
+}
+
+.close-button:active {
+    transform: scale(0.98);
+}
+
+.close-button svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
+/* --- СТИЛИ ОСНОВНОЙ КАРТОЧКИ АВТОРИЗАЦИИ (без изменений) --- */
+.card {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-service-info {
+    padding: 40px 40px 25px 40px;
+    text-align: center;
+}
+
+.card-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.card-description {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.telegram-icon {
+    width: 24px;
+    height: 24px;
+    fill: #0088cc;
+}
+
+.card-dynamic-area {
+    padding: 0 40px 40px 40px;
+    text-align: center;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.4s ease, padding 0.5s ease;
+}
+
+.card-dynamic-area.visible {
+    max-height: 250px;
+    opacity: 1;
+    padding-top: 25px;
+    border-top: 1px solid #e9ecef;
+}
+
+.confirm-button {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: #0088cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-button:hover {
+    background-color: #0077b3;
+}
+
+.confirm-button:active {
+    transform: scale(0.98);
+}
+
+.card-loader-inline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0088cc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.card-loader-inline p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.card-status-inline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.status-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 12px;
+}
+
+.status-icon.success {
+    fill: #28a745;
+}
+
+.status-icon.error {
+    fill: #dc3545;
+}
+
+.status-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.status-message {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.retry-button {
+    margin-top: 12px;
+    padding: 8px 18px;
+    background-color: #0088cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.retry-button:hover {
+    background-color: #0077b3;
+}

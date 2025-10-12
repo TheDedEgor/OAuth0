@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация | Название Сервиса</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<!-- КОНТЕЙНЕР С ОШИБКОЙ -->
+<div class="container" id="error-container">
+    <div class="card-error">
+        <div class="card-error-header">
+            <!-- Иконка ошибки -->
+            <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+        </div>
+        <div class="card-error-content">
+            <h2 class="error-title">Ошибка запуска</h2>
+            <p class="error-message">
+                Не удалось запустить приложение. Отсутствует обязательный параметр для авторизации. Пожалуйста,
+                попробуйте войти снова.
+            </p>
+            <button class="close-button" id="close-app-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Закрыть
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- КОНТЕЙНЕР С ОСНОВНОЙ КАРТОЧКОЙ АВТОРИЗАЦИИ -->
+<div class="container" id="login-container">
+    <div class="card">
+        <!-- Статичная часть: информация о сервисе -->
+        <div class="card-service-info">
+            <img id="card-logo" src="/defaultLogo.svg" alt="Логотип Сервиса" class="card-logo">
+
+            <h1 id="card-title" class="card-title"></h1>
+
+            <p id="card-description" class="card-description"></p>
+
+            <div class="card-footer">
+                <span>Авторизация через</span>
+                <svg class="telegram-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.3-5.9c.73-.27 1.37.17 1.13.94l-2.6 12.24c-.24 1.05-1.07 1.3-1.77.82l-4.85-3.58-2.34 2.27c-.22.22-.42.42-.83.42z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Динамическая область: кнопка, лоадер или результат -->
+        <div class="card-dynamic-area visible" id="card-dynamic-area">
+            <!-- Кнопка подтверждения -->
+            <button class="confirm-button" id="confirm-button">
+                Подтвердить вход
+            </button>
+
+            <!-- Лоадер -->
+            <div class="card-loader-inline" id="card-loader">
+                <div class="loader-spinner"></div>
+                <p>Идёт авторизация...</p>
+            </div>
+
+            <!-- Сообщение о результате -->
+            <div class="card-status-inline" id="card-status">
+                <!-- Контент будет добавлен через JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/script.js"></script>
+</body>
+</html>

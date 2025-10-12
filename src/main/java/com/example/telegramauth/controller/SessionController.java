@@ -23,6 +23,9 @@ public class SessionController {
     @Value("${bot.url}")
     private String botUrl;
 
+    @Value("${bot.web-app}")
+    private String webApp;
+
     private final AuthSessionService authSessionService;
 
     private final QrCodeService qrCodeService;
@@ -35,7 +38,7 @@ public class SessionController {
     @PostMapping("/generateQrCode")
     public String generateQrCode(@Valid @RequestBody ExternalServiceConfigDTO config) throws IOException, WriterException {
         var id = authSessionService.create(config);
-        var text = botUrl + "?start=" + id;
+        var text = (webApp.isEmpty() ? botUrl : webApp) + "?start=" + id;
         var qrCode = qrCodeService.generateQrCode(text, 200, 200);
         return Base64.getEncoder().encodeToString(qrCode);
     }

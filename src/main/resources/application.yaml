@@ -35,5 +35,6 @@ bucket4j:
 bot:
     token: ${token}
     url: ${bot-url:https://t.me/oauth0_bot}
+    web-app: ${web-app:}
 
 server.port: ${app-port:8080}
