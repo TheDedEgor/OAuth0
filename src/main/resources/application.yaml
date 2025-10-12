@@ -1,4 +1,12 @@
 spring:
+    cache:
+      jcache:
+        provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+      cache-names:
+        - buckets
+        - filterConfigCache
+      caffeine:
+          spec: maximumSize=1000000,expireAfterAccess=3600s
     application.name: TelegramAuth
     datasource:
         url: jdbc:h2:file:./db/data;AUTO_SERVER=TRUE
@@ -8,9 +16,25 @@ spring:
     jpa:
         database-platform: org.hibernate.dialect.H2Dialect
         generate-ddl: true
+
+bucket4j:
+    enabled: true
+    filter-config-caching-enabled: true
+    filter-config-cache-name: filterConfigCache
+    filters:
+        - id: session-filter
+          cache-name: buckets
+          url: /session.*
+          rate-limits:
+            - cache-key: getRemoteAddr()
+              bandwidths:
+                - capacity: 3
+                  time: 1
+                  unit: minutes
+
 bot:
     token: ${token}
     url: ${bot-url:https://t.me/oauth0_bot}
-    enableConfirm: ${enableConfirm:false}
+    web-app: ${web-app:}
 
 server.port: ${app-port:8080}
