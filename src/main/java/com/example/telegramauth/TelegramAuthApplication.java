@@ -11,10 +11,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Log4j2
 @SpringBootApplication
 @EnableCaching
+@EnableScheduling
 @EnableConfigurationProperties(BotConfig.class)
 public class TelegramAuthApplication {
 

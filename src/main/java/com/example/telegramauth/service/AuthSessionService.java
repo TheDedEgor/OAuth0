@@ -2,14 +2,13 @@ package com.example.telegramauth.service;
 
 import com.example.telegramauth.exception.ExpiredTimeUuidException;
 import com.example.telegramauth.exception.NotFoundSessionException;
-import com.example.telegramauth.model.dto.ExternalServiceConfigDTO;
+import com.example.telegramauth.model.dto.AuthSessionDTO;
 import com.example.telegramauth.model.entity.AuthSession;
+import com.example.telegramauth.model.enums.SessionStatus;
 import com.example.telegramauth.repository.AuthSessionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -17,27 +16,32 @@ public class AuthSessionService {
 
     private final AuthSessionRepository authSessionRepository;
 
-    public String create(ExternalServiceConfigDTO config) {
-        var authSession = new AuthSession(config);
+    public String create(AuthSessionDTO authSessionDTO) {
+        var authSession = new AuthSession(authSessionDTO);
         return authSessionRepository.save(authSession).getUuid();
     }
 
     public AuthSession get(String uuid) throws NotFoundSessionException, ExpiredTimeUuidException {
-        return get(uuid, false);
-    }
-
-    public AuthSession get(String uuid, Boolean checkTime) throws NotFoundSessionException, ExpiredTimeUuidException {
         var authSession = authSessionRepository.findById(uuid)
-                .orElseThrow(() -> new NotFoundSessionException("Данный uuid не найден"));
+                .orElseThrow(() -> new NotFoundSessionException("Не удалось найти сессию"));
 
-        if (checkTime) {
-            var createdAt = authSession.getCreatedAt();
-            var duration = Duration.between(createdAt, LocalDateTime.now());
-            if (duration.toMinutes() > 1) {
-                throw new ExpiredTimeUuidException("Время действия uuid истекло");
-            }
+        if (authSession.isExpired()) {
+            authSession.setStatus(SessionStatus.EXPIRED);
+            authSessionRepository.save(authSession);
+            throw new ExpiredTimeUuidException("Время действия сессии истекло");
         }
 
         return authSession;
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    private void updateExpiredSessions() {
+        var sessions = authSessionRepository.findAllByStatusAndPermanentIsFalse(SessionStatus.ACTIVE);
+        sessions.forEach(session -> {
+            if (session.isExpired()) {
+                session.setStatus(SessionStatus.EXPIRED);
+            }
+        });
+        authSessionRepository.saveAll(sessions);
     }
 }

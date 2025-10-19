@@ -46,7 +46,7 @@ public class StartCommand implements BotCommand {
             }
             var uuid = optionalUuid.get();
 
-            auth(chatId, uuid);
+            auth(uuid, update);
         }
         catch (Exception ex) {
             log.error(ex.getMessage());
@@ -54,15 +54,15 @@ public class StartCommand implements BotCommand {
         }
     }
 
-    // TODO: Пересмотреть поиск идентификатора пользователя на id из параметра "from"
-    // Там же можно достать firstname, lastname и username
-    private void auth(Long chatId, String uuid) {
+    private void auth(String uuid, Update update) {
+        var chatId = update.message().chat().id();
         try {
             var session = authSessionService.get(uuid);
+            var user = update.message().from();
 
             bot.execute(new SendMessage(chatId, "Авторизуемся..."));
 
-            var response = authApiClient.auth(session.getExternalServiceConfig().getAuthUrl(), new UserDTO(chatId, uuid));
+            var response = authApiClient.auth(session.getExternalServiceConfig().getAuthUrl(), new UserDTO(uuid, user));
             if (response.getStatusCode().is2xxSuccessful()) {
                 var message = new SendMessage(chatId, "Авторизация прошла успешно!")
                         .replyMarkup(new ReplyKeyboardRemove(true));
@@ -74,7 +74,7 @@ public class StartCommand implements BotCommand {
             }
         }
         catch (Exception ex) {
-            log.error(ex.getMessage());
+            log.error(ex);
             var message = new SendMessage(chatId, "Не удалось пройти авторизацию!")
                     .replyMarkup(new ReplyKeyboardRemove(true));
             bot.execute(message);

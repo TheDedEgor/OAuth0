@@ -2,7 +2,7 @@ package com.example.telegramauth.controller;
 
 import com.example.telegramauth.exception.ExpiredTimeUuidException;
 import com.example.telegramauth.exception.NotFoundSessionException;
-import com.example.telegramauth.model.dto.ServiceInfoDTO;
+import com.example.telegramauth.model.dto.ExternalServiceConfigDTO;
 import com.example.telegramauth.service.AuthSessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +24,6 @@ public class HomeController {
     @GetMapping("/api/init")
     public ResponseEntity<?> init(@RequestParam String uuid) throws NotFoundSessionException, ExpiredTimeUuidException {
         var session = authSessionService.get(uuid);
-        return ResponseEntity.ok(new ServiceInfoDTO(session.getExternalServiceConfig()));
+        return ResponseEntity.ok(new ExternalServiceConfigDTO(session.getExternalServiceConfig()));
     }
 }
