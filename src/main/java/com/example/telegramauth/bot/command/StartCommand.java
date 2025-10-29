@@ -10,6 +10,7 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -64,6 +65,12 @@ public class StartCommand implements BotCommand {
 
             var response = authApiClient.auth(session.getExternalServiceConfig().getAuthUrl(), new UserDTO(uuid, user));
             if (response.getStatusCode().is2xxSuccessful()) {
+                var contentType = response.getHeaders().getContentType();
+                // TODO определится с ContentType авторизационного эндпоинта
+                if (contentType == null || contentType.equals(MediaType.TEXT_HTML)) {
+                    throw new RuntimeException(String.format("Сервер вернул неожиданный Content-Type: %s", contentType));
+                }
+
                 var message = new SendMessage(chatId, "Авторизация прошла успешно!")
                         .replyMarkup(new ReplyKeyboardRemove(true));
                 bot.execute(message);

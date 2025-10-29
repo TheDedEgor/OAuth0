@@ -34,7 +34,5 @@ bucket4j:
 
 bot:
     token: ${token}
-    url: ${bot-url}
-    web-app-url: ${web-app-url:}
 
 server.port: ${app-port:8080}
