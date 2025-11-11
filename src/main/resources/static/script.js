@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loginContainer = document.getElementById('login-container');
     const errorContainer = document.getElementById('error-container');
     const closeAppBtn = document.getElementById('close-app-btn');
+    const errorMessage = document.getElementById('error-message');
 
     const tg = window.Telegram.WebApp;
     const user = tg.initDataUnsafe.user;
@@ -30,45 +31,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cardDesc = document.getElementById('card-description');
     const cardLogo = document.getElementById('card-logo');
 
-    const response = await fetch(`api/init?uuid=${uuid}`);
+    try {
+        const response = await axios.get(`api/init?uuid=${uuid}`);
+        const data = response.data;
+        // --- ЕСЛИ UUID ЕСТЬ, ПОКАЗЫВАЕМ ОСНОВНУЮ КАРТОЧКУ ---
+        loginContainer.classList.add('active');
 
-    if (!response.ok) {
+        cardTitle.innerText = data.name;
+        cardDesc.innerText = data.description;
+        if (data.logoUrl) {
+            cardLogo.src = data.logoUrl;
+        }
+        // Авторизуемся
+        await auth(data.authUrl);
+    } catch (err) {
+        console.error(err);
+        let msg = 'Во время авторизации произошла ошибка! Обратитесь к администратору!';
+        if (axios.isAxiosError(err)) {
+            msg = err.response?.data?.message || msg;
+        }
+        errorMessage.innerText = msg;
         errorContainer.classList.add('active');
-        return;
     }
 
-    const data = await response.json();
-    // --- ЕСЛИ UUID ЕСТЬ, ПОКАЗЫВАЕМ ОСНОВНУЮ КАРТОЧКУ ---
-    loginContainer.classList.add('active');
-
-    cardTitle.innerText = data.name;
-    cardDesc.innerText = data.description;
-    if (data.logoUrl) {
-        cardLogo.src = data.logoUrl;
-    }
-    // Авторизуемся
-    auth();
-
-    async function auth() {
+    async function auth(authUrl) {
         showLoadingState();
 
         try {
-            const response = await fetch(data.authUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: user.id,
-                    uuid
-                })
+            await axios.post(authUrl, {
+                id: user.id,
+                uuid
             });
 
-            if (response.ok) {
-                showResultState('success', 'Авторизация успешна!', 'Можно закрыть данное окно.');
-            } else {
-                showResultState('error', 'Ошибка авторизации', 'Не удалось подтвердить вход. Попробуйте еще раз.');
-            }
+            showResultState('success', 'Авторизация успешна!', 'Можно закрыть данное окно.');
         } catch (err) {
             console.error(err);
             showResultState('error', 'Ошибка авторизации', 'Не удалось подтвердить вход. Попробуйте еще раз.');

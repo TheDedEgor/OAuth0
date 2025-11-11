@@ -36,3 +36,4 @@ bot:
     token: ${token}
 
 server.port: ${app-port:8080}
+server.error.include-message: always

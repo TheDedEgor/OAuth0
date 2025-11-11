@@ -1,6 +1,6 @@
 package com.example.telegramauth.service;
 
-import com.example.telegramauth.exception.ExpiredTimeUuidException;
+import com.example.telegramauth.exception.ExpiredTimeSessionException;
 import com.example.telegramauth.exception.NotFoundSessionException;
 import com.example.telegramauth.model.dto.AuthSessionDTO;
 import com.example.telegramauth.model.entity.AuthSession;
@@ -21,14 +21,14 @@ public class AuthSessionService {
         return authSessionRepository.save(authSession).getUuid();
     }
 
-    public AuthSession get(String uuid) throws NotFoundSessionException, ExpiredTimeUuidException {
+    public AuthSession get(String uuid) throws NotFoundSessionException, ExpiredTimeSessionException {
         var authSession = authSessionRepository.findById(uuid)
                 .orElseThrow(() -> new NotFoundSessionException("Не удалось найти сессию"));
 
         if (authSession.isExpired()) {
             authSession.setStatus(SessionStatus.EXPIRED);
             authSessionRepository.save(authSession);
-            throw new ExpiredTimeUuidException("Время действия сессии истекло");
+            throw new ExpiredTimeSessionException("Время действия сессии истекло");
         }
 
         return authSession;
