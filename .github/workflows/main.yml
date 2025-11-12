@@ -23,4 +23,4 @@ jobs:
         run: docker build -t dedegor/oauth0 .
 
       - name: Push DockerHub
-        run: docker push
+        run: docker push dedegor/oauth0:latest
