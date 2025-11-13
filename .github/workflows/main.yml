@@ -32,6 +32,7 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oauth0:latest
   deploy:
     runs-on: ubuntu-22.04
+    needs: build
     steps:
       - name: Deploy to remote server via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -41,5 +42,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd ~
-            docker-compose pull
-            docker-compose up -d
+            docker compose pull
+            docker compose up -d
