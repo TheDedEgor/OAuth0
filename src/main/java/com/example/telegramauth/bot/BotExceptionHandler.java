@@ -2,8 +2,10 @@ package com.example.telegramauth.bot;
 
 import com.pengrad.telegrambot.ExceptionHandler;
 import com.pengrad.telegrambot.TelegramException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
+@Log4j2
 @Component
 public class BotExceptionHandler implements ExceptionHandler {
     @Override
@@ -14,6 +16,7 @@ public class BotExceptionHandler implements ExceptionHandler {
             e.response().description();
         } else {
             // probably network error
+            log.error(e);
         }
     }
 }

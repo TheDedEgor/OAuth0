@@ -6,6 +6,7 @@ import com.example.telegramauth.model.dto.UserDTO;
 import com.example.telegramauth.service.AuthSessionService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
@@ -60,10 +61,14 @@ public class StartCommand implements BotCommand {
         try {
             var session = authSessionService.get(uuid);
             var user = update.message().from();
+            var serviceConfig = session.getExternalServiceConfig();
 
+            var infoServiceMsg = String.format("<u>Информация о сервисе:</u>\n<b>%s</b>", serviceConfig.getServiceName())
+                + (serviceConfig.getDescription() != null ? String.format("\n<i>%s</i>", serviceConfig.getDescription()) : "");
+            bot.execute(new SendMessage(chatId, infoServiceMsg).parseMode(ParseMode.HTML));
             bot.execute(new SendMessage(chatId, "Авторизуемся..."));
 
-            var response = authApiClient.auth(session.getExternalServiceConfig().getAuthUrl(), new UserDTO(uuid, user));
+            var response = authApiClient.auth(serviceConfig.getAuthUrl(), new UserDTO(uuid, user));
             if (response.getStatusCode().is2xxSuccessful()) {
                 var contentType = response.getHeaders().getContentType();
                 // TODO определится с ContentType авторизационного эндпоинта
