@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const errorMessage = document.getElementById('error-message');
 
     const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user;
+    tg.ready();
     const uuid = tg.initDataUnsafe.start_param;
 
     if (!uuid) {
@@ -32,7 +32,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cardLogo = document.getElementById('card-logo');
 
     try {
-        const response = await axios.get(`api/init?uuid=${uuid}`);
+        const response = await axios.get(`api/init`, {
+            headers: {
+                'X-Telegram-Init': tg.initData
+            }
+        });
         const data = response.data;
         // --- ЕСЛИ UUID ЕСТЬ, ПОКАЗЫВАЕМ ОСНОВНУЮ КАРТОЧКУ ---
         loginContainer.classList.add('active');
@@ -43,7 +47,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             cardLogo.src = data.logoUrl;
         }
         // Авторизуемся
-        await auth(data.authUrl);
+        showLoadingState();
+
+        try {
+            await axios.post('api/auth', null, {
+                headers: {
+                    'X-Telegram-Init': tg.initData
+                }
+            });
+
+            showResultState('success', 'Авторизация успешна!', 'Можно закрыть данное окно.');
+        } catch (err) {
+            console.error(err);
+            showResultState('error', 'Ошибка авторизации', 'Не удалось подтвердить вход. Попробуйте еще раз.');
+        }
     } catch (err) {
         console.error(err);
         let msg = 'Во время авторизации произошла ошибка! Обратитесь к администратору!';
@@ -52,22 +69,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         errorMessage.innerText = msg;
         errorContainer.classList.add('active');
-    }
-
-    async function auth(authUrl) {
-        showLoadingState();
-
-        try {
-            await axios.post(authUrl, {
-                id: user.id,
-                uuid
-            });
-
-            showResultState('success', 'Авторизация успешна!', 'Можно закрыть данное окно.');
-        } catch (err) {
-            console.error(err);
-            showResultState('error', 'Ошибка авторизации', 'Не удалось подтвердить вход. Попробуйте еще раз.');
-        }
     }
 
     function showLoadingState() {
