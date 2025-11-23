@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>TelegramAuth</artifactId>
+    <artifactId>OAuth0</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>TelegramAuth</name>
-    <description>TelegramAuth</description>
+    <name>OAuth0</name>
+    <description>OAuth0</description>
     <url/>
     <licenses>
         <license/>
