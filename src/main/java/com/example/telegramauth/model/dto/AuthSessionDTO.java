@@ -1,22 +1,21 @@
 package com.example.telegramauth.model.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.example.telegramauth.model.entity.AuthSession;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.URL;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class AuthSessionDTO {
-    @URL(message = "Должен быть корректный URL")
-    @NotBlank(message = "URL обязательно должен быть указан")
-    private String authUrl;
-    @NotBlank(message = "Название сервиса обязательно")
-    private String serviceName;
-    private String description;
-    private String logoUrl;
-    private Boolean permanent = false;
-    private Long lifetimeSeconds = 300L;
+    private String uuid;
+    private LocalDateTime expiredAt;
+
+    public AuthSessionDTO(AuthSession authSession) {
+        this.uuid = authSession.getUuid();
+        this.expiredAt = authSession.getExpiredAt();
+    }
 }

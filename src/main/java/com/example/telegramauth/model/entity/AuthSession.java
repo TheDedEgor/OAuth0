@@ -1,6 +1,6 @@
 package com.example.telegramauth.model.entity;
 
-import com.example.telegramauth.model.dto.AuthSessionDTO;
+import com.example.telegramauth.model.dto.CreateAuthSessionDTO;
 import com.example.telegramauth.model.enums.SessionStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -39,7 +39,7 @@ public class AuthSession {
 
     /**
      * Признак постоянной (вечной) сессии.
-     * true = без срока действия (expiresAt = null)
+     * true = без срока действия (expiredAt = null)
      */
     @Column(nullable = false)
     private boolean permanent = false;
@@ -48,11 +48,11 @@ public class AuthSession {
     @Fetch(FetchMode.JOIN)
     private ExternalServiceConfig externalServiceConfig;
 
-    public AuthSession(AuthSessionDTO authSessionDTO) {
-        this.permanent = authSessionDTO.getPermanent();
-        this.externalServiceConfig = new ExternalServiceConfig(authSessionDTO);
+    public AuthSession(CreateAuthSessionDTO createAuthSessionDTO) {
+        this.permanent = createAuthSessionDTO.getPermanent();
+        this.externalServiceConfig = new ExternalServiceConfig(createAuthSessionDTO);
         if (!permanent) {
-            this.expiredAt = LocalDateTime.now().plusSeconds(authSessionDTO.getLifetimeSeconds());
+            this.expiredAt = LocalDateTime.now().plusSeconds(createAuthSessionDTO.getLifetimeSeconds());
         }
     }
 

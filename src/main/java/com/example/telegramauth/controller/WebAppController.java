@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequiredArgsConstructor
-public class HomeController {
+public class WebAppController {
 
     private final AuthApiClient authApiClient;
 

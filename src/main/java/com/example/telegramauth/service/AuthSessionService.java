@@ -3,6 +3,7 @@ package com.example.telegramauth.service;
 import com.example.telegramauth.exception.ExpiredTimeSessionException;
 import com.example.telegramauth.exception.NotFoundSessionException;
 import com.example.telegramauth.model.dto.AuthSessionDTO;
+import com.example.telegramauth.model.dto.CreateAuthSessionDTO;
 import com.example.telegramauth.model.entity.AuthSession;
 import com.example.telegramauth.model.enums.SessionStatus;
 import com.example.telegramauth.repository.AuthSessionRepository;
@@ -16,9 +17,9 @@ public class AuthSessionService {
 
     private final AuthSessionRepository authSessionRepository;
 
-    public String create(AuthSessionDTO authSessionDTO) {
-        var authSession = new AuthSession(authSessionDTO);
-        return authSessionRepository.save(authSession).getUuid();
+    public AuthSessionDTO create(CreateAuthSessionDTO createAuthSessionDTO) {
+        var authSession = new AuthSession(createAuthSessionDTO);
+        return new AuthSessionDTO(authSessionRepository.save(authSession));
     }
 
     public AuthSession get(String uuid) throws NotFoundSessionException, ExpiredTimeSessionException {

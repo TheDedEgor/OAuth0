@@ -116,6 +116,12 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>jcache</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.oauth0.lib</groupId>
+            <artifactId>oauth0-spring-boot-starter</artifactId>
+            <version>0.0.38-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

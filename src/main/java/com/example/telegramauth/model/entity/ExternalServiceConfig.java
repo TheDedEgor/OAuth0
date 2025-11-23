@@ -1,6 +1,6 @@
 package com.example.telegramauth.model.entity;
 
-import com.example.telegramauth.model.dto.AuthSessionDTO;
+import com.example.telegramauth.model.dto.CreateAuthSessionDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +25,10 @@ public class ExternalServiceConfig {
 
     private String logoUrl;
 
-    public ExternalServiceConfig(AuthSessionDTO authSessionDTO) {
-        this.authUrl = authSessionDTO.getAuthUrl();
-        this.serviceName = authSessionDTO.getServiceName();
-        this.description = authSessionDTO.getDescription();
-        this.logoUrl = authSessionDTO.getLogoUrl();
+    public ExternalServiceConfig(CreateAuthSessionDTO createAuthSessionDTO) {
+        this.authUrl = createAuthSessionDTO.getAuthUrl();
+        this.serviceName = createAuthSessionDTO.getServiceName();
+        this.description = createAuthSessionDTO.getDescription();
+        this.logoUrl = createAuthSessionDTO.getLogoUrl();
     }
 }

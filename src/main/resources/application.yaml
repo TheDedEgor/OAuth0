@@ -37,3 +37,6 @@ bot:
 
 server.port: ${app-port:8080}
 server.error.include-message: always
+oauth0:
+  service-base-url: http://localhost:8080
+  oauth-base-url: http://localhost:8080

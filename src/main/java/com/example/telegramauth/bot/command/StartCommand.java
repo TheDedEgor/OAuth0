@@ -71,8 +71,7 @@ public class StartCommand implements BotCommand {
             var response = authApiClient.auth(serviceConfig.getAuthUrl(), new UserDTO(uuid, user));
             if (response.getStatusCode().is2xxSuccessful()) {
                 var contentType = response.getHeaders().getContentType();
-                // TODO определится с ContentType авторизационного эндпоинта
-                if (contentType == null || contentType.equals(MediaType.TEXT_HTML)) {
+                if (contentType != null) {
                     throw new RuntimeException(String.format("Сервер вернул неожиданный Content-Type: %s", contentType));
                 }
 

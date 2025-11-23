@@ -1,13 +1,14 @@
 package com.example.telegramauth.controller;
 
+import com.example.telegramauth.exception.ExpiredTimeSessionException;
+import com.example.telegramauth.exception.NotFoundSessionException;
 import com.example.telegramauth.model.dto.AuthSessionDTO;
+import com.example.telegramauth.model.dto.CreateAuthSessionDTO;
+import com.example.telegramauth.model.entity.AuthSession;
 import com.example.telegramauth.service.AuthSessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/session")
@@ -16,8 +17,13 @@ public class SessionController {
 
     private final AuthSessionService authSessionService;
 
-    @PostMapping("/create")
-    public String create(@Valid @RequestBody AuthSessionDTO authSessionDTO) {
-        return authSessionService.create(authSessionDTO);
+    @PostMapping
+    public AuthSessionDTO create(@Valid @RequestBody CreateAuthSessionDTO createAuthSessionDTO) {
+        return authSessionService.create(createAuthSessionDTO);
+    }
+
+    @GetMapping("/{uuid}")
+    public AuthSession get(@PathVariable String uuid) throws NotFoundSessionException, ExpiredTimeSessionException {
+        return authSessionService.get(uuid);
     }
 }
