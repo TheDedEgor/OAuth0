@@ -10,7 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "auth_sessions")
@@ -25,13 +25,13 @@ public class AuthSession {
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     /**
      * Если null → сессия бессрочная.
      * Если не null → сессия истечёт в указанное время.
      */
-    private LocalDateTime expiredAt;
+    private ZonedDateTime expiredAt;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -52,11 +52,11 @@ public class AuthSession {
         this.permanent = createAuthSessionDTO.getPermanent();
         this.externalServiceConfig = new ExternalServiceConfig(createAuthSessionDTO);
         if (!permanent) {
-            this.expiredAt = LocalDateTime.now().plusSeconds(createAuthSessionDTO.getLifetimeSeconds());
+            this.expiredAt = ZonedDateTime.now().plusSeconds(createAuthSessionDTO.getLifetimeSeconds());
         }
     }
 
     public boolean isExpired() {
-        return !permanent && expiredAt != null && LocalDateTime.now().isAfter(expiredAt);
+        return !permanent && expiredAt != null && ZonedDateTime.now().isAfter(expiredAt);
     }
 }

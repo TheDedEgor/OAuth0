@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class AuthSessionDTO {
     private String uuid;
-    private LocalDateTime expiredAt;
+    private ZonedDateTime expiredAt;
 
     public AuthSessionDTO(AuthSession authSession) {
         this.uuid = authSession.getUuid();
