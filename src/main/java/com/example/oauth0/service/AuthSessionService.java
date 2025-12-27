@@ -23,11 +23,10 @@ public class AuthSessionService {
     private final AuthApiClient authApiClient;
 
     /**
-     * Создание новой авторизационной сессии
+     * Создание новой аутентификационной сессии
      */
-    public AuthSessionDTO create(CreateAuthSessionDTO createAuthSessionDTO) {
-        var authSession = new AuthSession(createAuthSessionDTO);
-        return new AuthSessionDTO(authSessionRepository.save(authSession));
+    public AuthSession create(CreateAuthSessionDTO createAuthSessionDTO) {
+        return authSessionRepository.save(new AuthSession(createAuthSessionDTO));
     }
 
     /**

@@ -2,6 +2,7 @@ package com.example.oauth0.model.entity;
 
 import com.example.oauth0.model.dto.CreateAuthSessionDTO;
 import com.example.oauth0.model.enums.SessionStatus;
+import com.example.oauth0.service.SecureTokenGenerator;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,8 @@ public class AuthSession {
 
     private Long providerId;
 
+    private String secureToken;
+
     /**
      * Признак постоянной (вечной) сессии.
      * true = без срока действия (expiredAt = null)
@@ -53,6 +56,7 @@ public class AuthSession {
     public AuthSession(CreateAuthSessionDTO createAuthSessionDTO) {
         this.permanent = createAuthSessionDTO.getPermanent();
         this.externalServiceConfig = new ExternalServiceConfig(createAuthSessionDTO);
+        this.secureToken = SecureTokenGenerator.create();
         if (!permanent) {
             this.expiredAt = ZonedDateTime.now().plusSeconds(createAuthSessionDTO.getLifetimeSeconds());
         }
