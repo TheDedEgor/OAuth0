@@ -95,12 +95,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function confirmRequest(isConfirmed) {
         console.log('Отправляем запрос подтверждения...');
         // Путь к API может отличаться, я использую логичное название
-        await axios.post('api/webapp/confirm', null, {
+        const response = await axios.post('api/webapp/confirm', null, {
             headers,
             params: {
                 isConfirmed
             }
         });
+        return response.data;
     }
 
     // Функция авторизации (основной вход)
@@ -118,12 +119,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnNo.disabled = true;
 
         try {
-            // Шаг 1: Подтверждение действия
-            await confirmRequest(isConfirmed);
-
-            // Шаг 2: Если подтверждение ок, сразу авторизуемся
-            await performAuthorization();
-
+            // Подтверждение действия
+            const status = await confirmRequest(isConfirmed);
+            if (status === 'CONFIRMED') {
+                // Если подтверждение ок, сразу аутентифицируемся
+                showLoadingState();
+                await performAuthorization();
+            } else {
+                tg.close();
+            }
         } catch (err) {
             console.error(err);
             // При любой ошибке разблокируем кнопки, чтобы можно было попробовать снова
@@ -165,12 +169,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             ? '<svg class="status-icon success" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
             : '<svg class="status-icon error" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
 
+        // Генерируем HTML кнопки только для успеха
+        let closeButtonHtml = '';
+        if (type === 'success') {
+            closeButtonHtml = `<button class="status-close-btn" id="final-close-btn">Закрыть</button>`;
+        }
+
         cardStatus.innerHTML = `
             ${iconSvg}
             <div class="status-title">${title}</div>
             <div class="status-message">${message}</div>
+            ${closeButtonHtml}
         `;
         cardStatus.style.display = 'flex';
+
+        // Если кнопка была добавлена, вешаем на неё обработчик
+        if (type === 'success') {
+            const finalCloseBtn = document.getElementById('final-close-btn');
+            if (finalCloseBtn) {
+                finalCloseBtn.addEventListener('click', () => {
+                    tg.close();
+                });
+            }
+        }
     }
 
     function showErrorState(msg) {

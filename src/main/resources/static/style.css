@@ -292,3 +292,22 @@ body {
     color: var(--text-muted);
     line-height: 1.4;
 }
+
+/* --- Кнопка закрытия при успехе --- */
+.status-close-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.status-close-btn:hover {
+    background-color: #218838;
+}
