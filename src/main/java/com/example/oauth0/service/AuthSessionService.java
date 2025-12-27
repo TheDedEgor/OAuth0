@@ -25,8 +25,9 @@ public class AuthSessionService {
     /**
      * Создание новой аутентификационной сессии
      */
-    public AuthSession create(CreateAuthSessionDTO createAuthSessionDTO) {
-        return authSessionRepository.save(new AuthSession(createAuthSessionDTO));
+    public AuthSessionDTO create(CreateAuthSessionDTO createAuthSessionDTO) {
+        var authSession = new AuthSession(createAuthSessionDTO);
+        return new AuthSessionDTO(authSessionRepository.save(authSession));
     }
 
     /**

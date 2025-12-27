@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,9 +26,8 @@ public class WebAppController {
     }
 
     @GetMapping("/api/webapp/link")
-    public ResponseEntity<?> link(@TelegramInitData TelegramDataDTO tgData, @CookieValue(name = "OAUTH_SECURE_TOKEN", required = false) String secureToken) {
+    public ResponseEntity<?> link(@TelegramInitData TelegramDataDTO tgData) {
         try {
-            System.out.println(secureToken);
             var uuid = tgData.getStartParam();
             var providerId = tgData.getUser().id();
             var serviceInfo = authSessionService.link(uuid, providerId);

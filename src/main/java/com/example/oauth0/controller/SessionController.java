@@ -7,8 +7,6 @@ import com.example.oauth0.model.dto.CreateAuthSessionDTO;
 import com.example.oauth0.model.dto.ExternalServiceConfigDTO;
 import com.example.oauth0.model.enums.SessionStatus;
 import com.example.oauth0.service.AuthSessionService;
-import com.example.oauth0.service.CookieService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +19,8 @@ public class SessionController {
     private final AuthSessionService authSessionService;
 
     @PostMapping
-    public AuthSessionDTO create(@Valid @RequestBody CreateAuthSessionDTO createAuthSessionDTO, HttpServletResponse response) {
-        var authSession = authSessionService.create(createAuthSessionDTO);
-
-        var cookie = CookieService.createForSecureToken(authSession.getSecureToken(), authSession.getExpiredAt());
-        response.addCookie(cookie);
-
-        return new AuthSessionDTO(authSession);
+    public AuthSessionDTO create(@Valid @RequestBody CreateAuthSessionDTO createAuthSessionDTO) {
+        return authSessionService.create(createAuthSessionDTO);
     }
 
     @PostMapping("/link")
