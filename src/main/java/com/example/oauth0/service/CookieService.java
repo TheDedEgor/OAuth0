@@ -11,6 +11,7 @@ public class CookieService {
 //        cookie.setHttpOnly(true);
 //        cookie.setSecure(true);
         cookie.setPath("/");
+        cookie.setAttribute("SameSite", "None");
         var seconds = Duration.between(ZonedDateTime.now(), expiredAt).getSeconds();
         cookie.setMaxAge((int) seconds);
         return cookie;
