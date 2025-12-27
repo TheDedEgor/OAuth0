@@ -8,6 +8,11 @@
     --text-muted: #6c757d;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     --border-radius: 16px;
+    --primary-color: #0088cc;
+    --primary-hover: #0077b3;
+    --secondary-bg: #f0f2f5;
+    --secondary-border: #dcdfe6;
+    --secondary-text: #606266;
 }
 
 * {
@@ -30,11 +35,11 @@ body {
 .container {
     width: 100%;
     max-width: 420px;
-    display: none; /* По умолчанию все контейнеры скрыты */
+    display: none;
 }
 
 .container.active {
-    display: flex; /* Показываем активный контейнер */
+    display: flex;
 }
 
 /* --- СТИЛИ КАРТОЧКИ ОШИБКИ --- */
@@ -110,7 +115,7 @@ body {
     fill: white;
 }
 
-/* --- СТИЛИ ОСНОВНОЙ КАРТОЧКИ АВТОРИЗАЦИИ (без изменений) --- */
+/* --- СТИЛИ ОСНОВНОЙ КАРТОЧКИ АВТОРИЗАЦИИ --- */
 .card {
     background: var(--card-background);
     border-radius: var(--border-radius);
@@ -118,11 +123,6 @@ body {
     width: 100%;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
 .card-service-info {
@@ -181,32 +181,61 @@ body {
     border-top: 1px solid #e9ecef;
 }
 
-.confirm-button {
+/* --- СТИЛИ ДЛЯ КНОПОК ДА/НЕТ --- */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
+}
+
+.buttons-block {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.action-btn {
+    flex: 1; /* Кнопки одинаковой ширины */
     padding: 12px 20px;
-    background-color: #0088cc;
-    color: white;
-    border: none;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
+    transition: all 0.2s ease;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.confirm-button:hover {
-    background-color: #0077b3;
-}
-
-.confirm-button:active {
+.action-btn:active {
     transform: scale(0.98);
 }
 
+.action-btn.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.action-btn.secondary {
+    background-color: var(--secondary-bg);
+    color: var(--secondary-text);
+    border: 1px solid var(--secondary-border);
+}
+
+.action-btn.secondary:hover {
+    background-color: #e6e8eb;
+    border-color: #c0c4cc;
+}
+
+/* --- ЛОАДЕР И СТАТУС --- */
 .card-loader-inline {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
 }
@@ -215,19 +244,15 @@ body {
     width: 40px;
     height: 40px;
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #0088cc;
+    border-top: 4px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 10px;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .card-loader-inline p {
@@ -237,7 +262,7 @@ body {
 }
 
 .card-status-inline {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
 }
@@ -266,22 +291,4 @@ body {
     font-size: 14px;
     color: var(--text-muted);
     line-height: 1.4;
-    margin-bottom: 8px;
-}
-
-.retry-button {
-    margin-top: 12px;
-    padding: 8px 18px;
-    background-color: #0088cc;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.retry-button:hover {
-    background-color: #0077b3;
 }

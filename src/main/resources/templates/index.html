@@ -18,7 +18,6 @@
 <div class="container" id="error-container">
     <div class="card-error">
         <div class="card-error-header">
-            <!-- Иконка ошибки -->
             <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                  stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -29,10 +28,10 @@
         <div class="card-error-content">
             <h2 class="error-title">Ошибка запуска</h2>
             <p id="error-message" class="error-message">
-                Не удалось запустить приложение. Отсутствует обязательный параметр для авторизации. Пожалуйста,
+                Не удалось запустить приложение. Отсутствует обязательный параметр для аутентификации. Пожалуйста,
                 попробуйте войти снова.
             </p>
-            <button class="close-button" id="close-app-btn">
+            <button class="close-button" id="close-app-btn" type="button">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                      stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -63,12 +62,21 @@
             </div>
         </div>
 
-        <!-- Динамическая область: кнопка, лоадер или результат -->
+        <!-- Динамическая область -->
         <div class="card-dynamic-area visible" id="card-dynamic-area">
-            <!-- Кнопка подтверждения -->
-            <button class="confirm-button" id="confirm-button">
-                Подтвердить вход
-            </button>
+
+            <!-- Группа кнопок Да/Нет -->
+            <div class="action-buttons" id="action-buttons">
+                <p>Вы уверены, что хотите войти в данный сервис?</p>
+                <div class="buttons-block">
+                    <button class="action-btn primary" id="btn-yes" type="button">
+                        Да
+                    </button>
+                    <button class="action-btn secondary" id="btn-no" type="button">
+                        Нет
+                    </button>
+                </div>
+            </div>
 
             <!-- Лоадер -->
             <div class="card-loader-inline" id="card-loader">

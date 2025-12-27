@@ -37,6 +37,8 @@ public class AuthSession {
     @Enumerated(EnumType.STRING)
     private SessionStatus status = SessionStatus.ACTIVE;
 
+    private Long providerId;
+
     /**
      * Признак постоянной (вечной) сессии.
      * true = без срока действия (expiredAt = null)

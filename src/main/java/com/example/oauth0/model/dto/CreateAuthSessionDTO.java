@@ -18,5 +18,5 @@ public class CreateAuthSessionDTO {
     private String description;
     private String logoUrl;
     private Boolean permanent = false;
-    private Long lifetimeSeconds = 300L;
+    private Long lifetimeSeconds = 180L;
 }

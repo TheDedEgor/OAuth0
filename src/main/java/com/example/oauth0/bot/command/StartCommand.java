@@ -1,13 +1,13 @@
 package com.example.oauth0.bot.command;
 
-import com.example.oauth0.apiClient.AuthApiClient;
 import com.example.oauth0.bot.BotCommand;
-import com.example.oauth0.model.dto.UserDTO;
+import com.example.oauth0.model.enums.SessionStatus;
 import com.example.oauth0.service.AuthSessionService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,8 +21,6 @@ import java.util.Optional;
 public class StartCommand implements BotCommand {
 
     private final TelegramBot bot;
-
-    private final AuthApiClient authApiClient;
 
     private final AuthSessionService authSessionService;
 
@@ -40,7 +38,7 @@ public class StartCommand implements BotCommand {
 
         try {
             var optionalUuid = getUuid(text);
-            if (optionalUuid .isEmpty()) {
+            if (optionalUuid.isEmpty()) {
                 log.error("UUID не был передан боту");
                 bot.execute(new SendMessage(chatId, BOT_ERROR_MESSAGE));
                 return;
@@ -48,8 +46,7 @@ public class StartCommand implements BotCommand {
             var uuid = optionalUuid.get();
 
             auth(uuid, update);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
             bot.execute(new SendMessage(chatId, BOT_ERROR_MESSAGE));
         }
@@ -58,41 +55,41 @@ public class StartCommand implements BotCommand {
     private void auth(String uuid, Update update) {
         var chatId = update.message().chat().id();
         try {
-            var session = authSessionService.get(uuid);
             var user = update.message().from();
-            var serviceConfig = session.getExternalServiceConfig();
+            var providerId = user.id();
 
-            var infoServiceMsg = String.format("<u>Информация о сервисе:</u>\n<b>%s</b>", serviceConfig.getServiceName())
-                + (serviceConfig.getDescription() != null ? String.format("\n<i>%s</i>", serviceConfig.getDescription()) : "");
+            var serviceInfo = authSessionService.link(uuid, providerId);
+            var sessionStatus = serviceInfo.getSessionStatus();
+
+            var infoServiceMsg = String.format("<u>Информация о сервисе:</u>\n<b>%s</b>", serviceInfo.getName())
+                + (serviceInfo.getDescription() != null ? String.format("\n<i>%s</i>", serviceInfo.getDescription()) : "");
             bot.execute(new SendMessage(chatId, infoServiceMsg).parseMode(ParseMode.HTML));
-            bot.execute(new SendMessage(chatId, "Авторизуемся..."));
+            if (sessionStatus == SessionStatus.AWAITING_CONFIRMATION) {
+                // Создаем кнопки
+                var btn1 = new InlineKeyboardButton("Да")
+                    .callbackData("confirm_session:" + uuid);
+                var btn2 = new InlineKeyboardButton("Нет")
+                    .callbackData("revoke_session:" + uuid);
 
-            var response = authApiClient.auth(serviceConfig.getAuthUrl(), new UserDTO(uuid, user));
-            if (response.getStatusCode().is2xxSuccessful()) {
-                var contentType = response.getHeaders().getContentType();
-                if (contentType != null) {
-                    throw new RuntimeException(String.format("Сервер вернул неожиданный Content-Type: %s", contentType));
-                }
+                // Создаем клавиатуру с двумя кнопками в одном ряду
+                var keyboardMarkup = new InlineKeyboardMarkup(btn1, btn2);
 
-                var message = new SendMessage(chatId, "Авторизация прошла успешно!")
-                        .replyMarkup(new ReplyKeyboardRemove(true));
-                bot.execute(message);
-            } else {
-                var message = new SendMessage(chatId, "Не удалось пройти авторизацию!")
-                        .replyMarkup(new ReplyKeyboardRemove(true));
-                bot.execute(message);
+                bot.execute(new SendMessage(chatId, "Вы уверены, что хотите войти в данный сервис?").replyMarkup(keyboardMarkup));
+
+                return;
             }
-        }
-        catch (Exception ex) {
+            bot.execute(new SendMessage(chatId, "Входим..."));
+            authSessionService.auth(uuid, providerId);
+            bot.execute(new SendMessage(chatId, "Вход успешно выполнен!"));
+        } catch (Exception ex) {
             log.error(ex);
-            var message = new SendMessage(chatId, "Не удалось пройти авторизацию!")
-                    .replyMarkup(new ReplyKeyboardRemove(true));
-            bot.execute(message);
+            bot.execute(new SendMessage(chatId, "Во время входа произошла ошибка!"));
         }
     }
 
     /**
      * Получение uuid из текста клиента telegram
+     *
      * @param text текст клиента telegram
      * @return Uuid если он есть
      */

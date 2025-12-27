@@ -1,6 +1,5 @@
 package com.example.oauth0.model.dto;
 
-import com.pengrad.telegrambot.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,15 +10,9 @@ public class UserDTO {
     private String uuid;
     // Данные пользователя
     private Long id;
-    private String username;
-    private String firstName;
-    private String lastName;
 
-    public UserDTO(String uuid, User user) {
+    public UserDTO(String uuid, Long providerId) {
         this.uuid = uuid;
-        this.id = user.id();
-        this.username = user.username();
-        this.firstName = user.firstName();
-        this.lastName = user.lastName();
+        this.id = providerId;
     }
 }

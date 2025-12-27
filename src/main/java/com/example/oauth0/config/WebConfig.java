@@ -18,4 +18,14 @@ public class WebConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(telegramInitDataArgumentResolver);
     }
+
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/api/**")
+//            .allowedOrigins("http://localhost:5173", "http://localhost:3000") // ваш фронтенд URL
+//            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//            .allowedHeaders("*")
+//            .allowCredentials(true) // ← КРИТИЧЕСКИ ВАЖНО
+//            .maxAge(3600);
+//    }
 }
