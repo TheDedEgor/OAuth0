@@ -19,6 +19,9 @@ public class ExternalServiceConfig {
     private String authUrl;
 
     @Column(nullable = false)
+    private String errorUrl;
+
+    @Column(nullable = false)
     private String serviceName;
 
     private String description;
@@ -27,6 +30,7 @@ public class ExternalServiceConfig {
 
     public ExternalServiceConfig(CreateAuthSessionDTO createAuthSessionDTO) {
         this.authUrl = createAuthSessionDTO.getAuthUrl();
+        this.errorUrl = createAuthSessionDTO.getErrorUrl();
         this.serviceName = createAuthSessionDTO.getServiceName();
         this.description = createAuthSessionDTO.getDescription();
         this.logoUrl = createAuthSessionDTO.getLogoUrl();

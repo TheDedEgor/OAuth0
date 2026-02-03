@@ -13,6 +13,8 @@ public class CreateAuthSessionDTO {
     @URL(message = "Должен быть корректный URL")
     @NotBlank(message = "URL обязательно должен быть указан")
     private String authUrl;
+    @NotBlank(message = "URL обязательно должен быть указан")
+    private String errorUrl;
     @NotBlank(message = "Название сервиса обязательно")
     private String serviceName;
     private String description;

@@ -1,4 +1,4 @@
-package com.example.oauth0.controller;
+package com.example.oauth0.controller.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

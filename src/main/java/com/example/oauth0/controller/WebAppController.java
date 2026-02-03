@@ -2,6 +2,7 @@ package com.example.oauth0.controller;
 
 import com.example.oauth0.exception.ExpiredTimeSessionException;
 import com.example.oauth0.exception.NotFoundSessionException;
+import com.example.oauth0.exception.SessionException;
 import com.example.oauth0.model.dto.TelegramDataDTO;
 import com.example.oauth0.security.TelegramInitData;
 import com.example.oauth0.service.AuthSessionService;
@@ -36,6 +37,8 @@ public class WebAppController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         } catch (ExpiredTimeSessionException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        } catch (SessionException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -48,7 +51,7 @@ public class WebAppController {
             return ResponseEntity.ok(sessionStatus);
         } catch (NotFoundSessionException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        } catch (ExpiredTimeSessionException ex) {
+        } catch (SessionException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
@@ -62,7 +65,7 @@ public class WebAppController {
             return ResponseEntity.ok().build();
         } catch (NotFoundSessionException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        } catch (ExpiredTimeSessionException ex) {
+        } catch (SessionException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }

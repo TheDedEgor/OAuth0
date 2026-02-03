@@ -1,7 +1,5 @@
 package com.example.oauth0.controller;
 
-import com.example.oauth0.exception.ExpiredTimeSessionException;
-import com.example.oauth0.exception.NotFoundSessionException;
 import com.example.oauth0.model.dto.AuthSessionDTO;
 import com.example.oauth0.model.dto.CreateAuthSessionDTO;
 import com.example.oauth0.model.dto.ExternalServiceConfigDTO;
@@ -24,17 +22,22 @@ public class SessionController {
     }
 
     @PostMapping("/link")
-    public ExternalServiceConfigDTO link(@RequestParam String uuid, @RequestParam Long providerId) throws NotFoundSessionException, ExpiredTimeSessionException {
+    public ExternalServiceConfigDTO link(@RequestParam String uuid, @RequestParam Long providerId) {
         return authSessionService.link(uuid, providerId);
     }
 
     @PostMapping("/confirm")
-    public SessionStatus confirm(@RequestParam String uuid, @RequestParam Long providerId, @RequestParam Boolean isConfirmed) throws NotFoundSessionException, ExpiredTimeSessionException {
+    public SessionStatus confirm(@RequestParam String uuid, @RequestParam Long providerId, @RequestParam Boolean isConfirmed) {
         return authSessionService.confirm(uuid, providerId, isConfirmed);
     }
 
     @PostMapping("/auth")
-    public void confirm(@RequestParam String uuid, @RequestParam Long providerId) throws NotFoundSessionException, ExpiredTimeSessionException {
+    public void confirm(@RequestParam String uuid, @RequestParam Long providerId) {
         authSessionService.auth(uuid, providerId);
+    }
+
+    @PostMapping("/reset")
+    public void reset(@RequestParam String uuid) {
+        authSessionService.reset(uuid);
     }
 }
